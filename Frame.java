@@ -3,7 +3,6 @@ package campo_minato;
 import java.util.Random;
 
 import java.net.URL;
-import java.awt.Dimension;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -17,18 +16,67 @@ public class Frame extends JFrame implements ActionListener {
 	int[][] matr = new int[9][9];
 	JButton[][] b = new JButton[9][9];
 	JButton nuovapar = new JButton("NUOVA PARTITA");
+	JLabel l = new JLabel();
 	JPanel bottoni = new JPanel();
+	JPanel upper = new JPanel(); 
+	JLabel nflag = new JLabel();
+	JLabel timerlabel = new JLabel();
+	JPanel time = new JPanel();
+	Random rand = new Random();
 	int nbombe = 10;
-	JLabel l = new JLabel("Benvenuto in campo minato");
-	Random rand = new Random(); 
+	int flag_cont = 10;
 	int int_random =0;
 	int action_count=0;
 	ImageIcon bandiera = new ImageIcon(((new ImageIcon("C:\\\\Users\\\\Roberta Borsa\\\\eclipse-workspace\\\\campo_minato\\\\src\\\\campo_minato\\\\bandiera.png")).getImage()).getScaledInstance(80, 80, java.awt.Image.SCALE_SMOOTH));
 	ImageIcon bombaX = new ImageIcon(((new ImageIcon("C:\\\\Users\\\\Roberta Borsa\\\\eclipse-workspace\\\\campo_minato\\\\src\\\\campo_minato\\\\bombaX.png")).getImage()).getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH));
 	ImageIcon bomba = new ImageIcon(((new ImageIcon("C:\\\\Users\\\\Roberta Borsa\\\\eclipse-workspace\\\\campo_minato\\\\src\\\\campo_minato\\\\bomba.png")).getImage()).getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH));
+	
+	int elapsedTime = 0;
+	 int seconds =0;
+	 int minutes =0;
+	 int hours =0;
+	 boolean started = false;
+	 String seconds_string = String.format("%02d", seconds);
+	 String minutes_string = String.format("%02d", minutes);
+	 String hours_string = String.format("%02d", hours);
+	 Timer timer = new Timer(1000, new ActionListener() {
+		  
+		  public void actionPerformed(ActionEvent e) {
+		   
+		   elapsedTime=elapsedTime+1000;
+		   hours = (elapsedTime/3600000);
+		   minutes = (elapsedTime/60000) % 60;
+		   seconds = (elapsedTime/1000) % 60;
+		   seconds_string = String.format("%02d", seconds);
+		   minutes_string = String.format("%02d", minutes);
+		   hours_string = String.format("%02d", hours);
+		   timerlabel.setText(hours_string+":"+minutes_string+":"+seconds_string);
+		   
+		  }
+		  
+		 });
+
+	
 	public Frame() {
+
 		
-	      
+		ImageIcon bandieraupper = new ImageIcon(((new ImageIcon("C:\\\\Users\\\\Roberta Borsa\\\\eclipse-workspace\\\\campo_minato\\\\src\\\\campo_minato\\\\bandiera.png")).getImage()).getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH));
+		 nflag.setText(Integer.toString(flag_cont));
+		 nflag.setIcon(bandieraupper);
+	   
+		
+		timerlabel.setText(hours_string+":"+minutes_string+":"+seconds_string);
+		timerlabel.setBounds(0,0,100,50);
+		timerlabel.setFont(new Font("Verdana",Font.PLAIN,35));
+		timerlabel.setBorder(BorderFactory.createBevelBorder(1));
+		timerlabel.setOpaque(true);
+		timerlabel.setHorizontalAlignment(JTextField.CENTER);
+	    time.add(timerlabel);
+		upper.add(nflag);
+		upper.add(time);
+		upper.setLayout(new FlowLayout());
+
+	    
 		nuovapar.addActionListener(this);
 		nuovapar.setBackground(new Color(220,220,220));
 		
@@ -74,16 +122,15 @@ public class Frame extends JFrame implements ActionListener {
 			
 			cont=0;
 			}
-				System.out.print(matr[i][j]);	
-		}System.out.println();
+				//System.out.print(matr[i][j]);	
+		}//System.out.println();
 		}
 
 		
-		l.setHorizontalAlignment(JLabel.CENTER);
-		l.setFont(new Font("Segoe UI",Font.BOLD,25));
+
 		this.setTitle("CAMPO MINATO");
 		this.setLayout(new BorderLayout());
-		this.getContentPane().add(l,"North");
+		this.getContentPane().add(upper,"North");
 		this.getContentPane().add(bottoni,"Center");
 		this.getContentPane().add(nuovapar,"South");
 		this.setSize(600,600);
@@ -96,6 +143,7 @@ public class Frame extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		for(int i=0;i<9;i++) {
 			for(int j=0;j<9;j++) {
+				if (action_count==0) timer.start();
 				if(e.getSource()==b[i][j]) {
 					if (action_count==70) {
 						l.setText("HAI VINTO!");
@@ -204,9 +252,11 @@ class CustomMouseListener implements MouseListener {
     					if(b[i][j].isEnabled()) {
     					if(b[i][j].getIcon()==null) {
     						b[i][j].setIcon(bandiera);
+    						flag_cont++;
     					}
     					else {
     						b[i][j].setIcon(null);
+    						if(flag_cont>0) flag_cont--;
     					}
     				}}
     			}
@@ -222,5 +272,5 @@ class CustomMouseListener implements MouseListener {
     }
     public void mouseExited(MouseEvent e) {
     }
- }
-}
+}}
+
